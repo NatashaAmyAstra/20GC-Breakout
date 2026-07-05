@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    public event EventHandler OnBlockBroken;
-
+    [SerializeField] private BlockManager _blockManager;
 
     public void BreakBlock()
     {
-        OnBlockBroken?.Invoke(this, EventArgs.Empty);
+        _blockManager.RegisterBlockBreak(this);
         Destroy(gameObject);
+    }
+
+    public void SetManager(BlockManager manager)
+    {
+        _blockManager = manager;
     }
 }
