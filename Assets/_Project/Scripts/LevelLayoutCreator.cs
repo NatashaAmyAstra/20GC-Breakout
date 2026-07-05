@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -16,8 +17,9 @@ public class LevelLayoutCreator : MonoBehaviour
 
     public void ToggleCellAt(Vector2 input)
     {
-        Vector2Int gridPoint = (Vector2Int)_grid.WorldToCell(input);
+        EditorUtility.SetDirty(_levelLayoutSO);
 
+        Vector2Int gridPoint = (Vector2Int)_grid.WorldToCell(input);
         List<Vector2Int> layoutList = _levelLayoutSO.BlockPositionArray.ToList();
 
         if (layoutList.Contains(gridPoint))
@@ -29,8 +31,9 @@ public class LevelLayoutCreator : MonoBehaviour
             layoutList.Add(gridPoint);
         }
 
-
         _levelLayoutSO.BlockPositionArray = layoutList.ToArray();
+
+        AssetDatabase.SaveAssetIfDirty(_levelLayoutSO);
     }
 
     private void OnDrawGizmos()
