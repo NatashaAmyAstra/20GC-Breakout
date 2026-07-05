@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public static Ball Instance;
+
     public event EventHandler OnSizeChanged;
 
 
@@ -19,6 +21,8 @@ public class Ball : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         _rigidbody = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CircleCollider2D>();
         UpdateSize();
@@ -58,7 +62,7 @@ public class Ball : MonoBehaviour
         OnSizeChanged?.Invoke(this, EventArgs.Empty);
     }
 
-
+    
 
     public void SetSize(float size)
     {
@@ -69,5 +73,10 @@ public class Ball : MonoBehaviour
     public float GetSize()
     {
         return _size;
+    }
+
+    public void SetDirection(Vector2 direction)
+    {
+        _moveVector = direction.normalized;
     }
 }

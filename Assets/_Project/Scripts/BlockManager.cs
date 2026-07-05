@@ -6,6 +6,7 @@ public class BlockManager : MonoBehaviour
 {
     public static BlockManager Instance;
 
+    public event EventHandler OnLevelComplete;
     public event EventHandler<OnPointsScoredEventArgs> OnPointsScored;
     public class OnPointsScoredEventArgs : EventArgs
     {
@@ -18,8 +19,6 @@ public class BlockManager : MonoBehaviour
 
     [SerializeField] private int _pointsPerBlock;
 
-    private int _activeLevelIndex;
-
     private List<Block> _blockList = new();
     private Grid _grid;
 
@@ -29,21 +28,13 @@ public class BlockManager : MonoBehaviour
         _grid = GetComponent<Grid>();
     }
 
-    private void Start()
+    public void LoadLevel(int level)
     {
-        _activeLevelIndex = 0;
-        InstantiateLevel();
-    }
-
-
-    private void InstantiateLevel()
-    {
-        foreach(Vector3Int position in _levelLayoutSOArray[_activeLevelIndex].BlockPositionArray)
+        foreach(Vector3Int position in _levelLayoutSOArray[level].BlockPositionArray)
         {
             Vector3 worldPosition = _grid.CellToWorld(position);
             Block block = Instantiate(_blockPrefab, worldPosition, Quaternion.identity).GetComponent<Block>();
 
-            block.SetManager(this);
             _blockList.Add(block);
         }
     }
@@ -68,9 +59,6 @@ public class BlockManager : MonoBehaviour
     private void LevelComplete()
     {
         // code for on completion
-
-        // load new level
-        _activeLevelIndex++;
-        InstantiateLevel();
+        OnLevelComplete?.Invoke(this, EventArgs.Empty);
     }
 }

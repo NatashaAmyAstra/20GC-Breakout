@@ -34,6 +34,7 @@ public class LevelLayoutCreator : MonoBehaviour
         _levelLayoutSO.BlockPositionArray = layoutList.ToArray();
 
         AssetDatabase.SaveAssetIfDirty(_levelLayoutSO);
+        EditorUtility.ClearDirty(_levelLayoutSO);
     }
 
     private void OnDrawGizmos()

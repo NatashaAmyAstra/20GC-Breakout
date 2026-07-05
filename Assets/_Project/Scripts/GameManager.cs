@@ -11,7 +11,9 @@ public class GameManager : MonoBehaviour
         public int Points;
     }
 
+    [SerializeField] private float _levelLoadDelay = 2f;
     private int _points;
+    private int _currentLevel;
     
 
     private void Awake()
@@ -22,10 +24,20 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         BlockManager.Instance.OnPointsScored += OnPointsScored;
+        BlockManager.Instance.OnLevelComplete += OnLevelComplete;
+
+        StartLevel();
     }
 
 
+    private void StartLevel()
+    {
+        BlockManager.Instance.LoadLevel(_currentLevel);
+        Player.Instance.GetReady();
+    }
 
+
+    
     private void OnPointsScored(object sender, BlockManager.OnPointsScoredEventArgs e)
     {
         int points = e.Points;
@@ -34,6 +46,20 @@ public class GameManager : MonoBehaviour
         {
             Points = _points
         });
+    }
+
+    private void OnLevelComplete(object sender, EventArgs e)
+    {
+        // level complete logic
+        Invoke(nameof(LoadNextLevel), _levelLoadDelay);
+        Ball.Instance.gameObject.SetActive(false);
+    }
+
+    private void LoadNextLevel()
+    {
+        Ball.Instance.gameObject.SetActive(true);
+        _currentLevel++;
+        StartLevel();
     }
 
 
