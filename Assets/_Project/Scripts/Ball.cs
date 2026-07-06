@@ -39,6 +39,13 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // bouncing off the bottom of the screen kills the ball
+        if(collision.gameObject.TryGetComponent(out KillZone killzone))
+        {
+            GameManager.Instance.RegisterDeath();
+            return;
+        }
+
         // bouncing off the player sets an angle based on where the player was hit
         if(collision.gameObject.TryGetComponent(out Player player))
         {

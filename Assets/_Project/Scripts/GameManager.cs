@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
         BlockManager.Instance.OnPointsScored += OnPointsScored;
         BlockManager.Instance.OnLevelComplete += OnLevelComplete;
 
+        SetDefaultValues();
         StartLevel();
     }
 
@@ -39,7 +40,6 @@ public class GameManager : MonoBehaviour
     {
         BlockManager.Instance.LoadLevel(_currentLevel);
         Player.Instance.GetReady();
-        SetDefaultValues();
     }
 
 
@@ -82,6 +82,23 @@ public class GameManager : MonoBehaviour
         StartLevel();
     }
 
+    private void RevivePlayer()
+    {
+        Ball.Instance.gameObject.SetActive(true);
+        Player.Instance.gameObject.SetActive(true);
+        Player.Instance.GetReady();
+    }
+
+
+
+
+    public void RegisterDeath()
+    {
+        SetLives(_lives -1);
+        Ball.Instance.gameObject.SetActive(false);
+        Player.Instance.gameObject.SetActive(false);
+        Invoke(nameof(RevivePlayer), _levelLoadDelay);
+    }
 
     public int GetPoints()
     {
