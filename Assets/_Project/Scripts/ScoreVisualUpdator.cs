@@ -11,8 +11,8 @@ public class ScoreVisualUpdator : MonoBehaviour
         GameManager.Instance.OnPointsChanged += UpdateScore;
     }
 
-    private void UpdateScore(object sender, GameManager.OnPointsChangedEventArgs e)
+    private void UpdateScore(object sender, GameManager.IntEventArgs e)
     {
-        _tmpObject.text = _scoreText + e.Points.ToString();
+        _tmpObject.text = _scoreText + e.Value.ToString();
     }
 }

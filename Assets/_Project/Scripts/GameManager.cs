@@ -5,11 +5,15 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public event EventHandler<OnPointsChangedEventArgs> OnPointsChanged;
-    public class OnPointsChangedEventArgs : EventArgs
+    public event EventHandler<IntEventArgs> OnLivesUpdated;
+    public event EventHandler<IntEventArgs> OnPointsChanged;
+    public class IntEventArgs : EventArgs
     {
-        public int Points;
+        public int Value;
     }
+
+    [SerializeField] private int _startingLives = 3;
+    private int _lives;
 
     [SerializeField] private float _levelLoadDelay = 2f;
     private int _points;
@@ -30,21 +34,37 @@ public class GameManager : MonoBehaviour
     }
 
 
+
     private void StartLevel()
     {
         BlockManager.Instance.LoadLevel(_currentLevel);
         Player.Instance.GetReady();
+        SetDefaultValues();
     }
 
 
-    
+    private void SetDefaultValues()
+    {
+        SetLives(_startingLives);
+    }
+
+    private void SetLives(int lives)
+    {
+        _lives = lives;
+
+        OnLivesUpdated?.Invoke(this, new IntEventArgs
+        {
+            Value = _lives
+        });
+    }
+
     private void OnPointsScored(object sender, BlockManager.OnPointsScoredEventArgs e)
     {
         int points = e.Points;
         _points += points;
-        OnPointsChanged?.Invoke(this, new OnPointsChangedEventArgs
+        OnPointsChanged?.Invoke(this, new IntEventArgs
         {
-            Points = _points
+            Value = _points
         });
     }
 
@@ -66,5 +86,10 @@ public class GameManager : MonoBehaviour
     public int GetPoints()
     {
         return _points;
+    }
+
+    private int GetLives()
+    {
+        return _lives;
     }
 }

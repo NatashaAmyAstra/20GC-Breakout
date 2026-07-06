@@ -32,21 +32,24 @@ public class Ball : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // move the ball at a constant pace
         _rigidbody.linearVelocity = _moveVector * _speed;
     }
 
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // bouncing off the player sets an angle based on where the player was hit
         if(collision.gameObject.TryGetComponent(out Player player))
         {
             _moveVector = player.GetBounceVectorNormalized(collision.GetContact(0).point);
             return;
         }
-
-        _moveVector = Vector2.Reflect(_moveVector, collision.GetContact(0).normal);
-        _moveVector.Normalize();
-
+        
+        // bounce off of non-player objects at a reflected angle
+        _moveVector = Vector2.Reflect(_moveVector, collision.GetContact(0).normal).normalized;
+        
+        // if the collided object is a block, break it
         if(collision.gameObject.TryGetComponent(out Block block))
         {
             block.BreakBlock();
